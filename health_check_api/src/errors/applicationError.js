@@ -18,8 +18,15 @@ class MethodNotAllowedError extends ApplicationError {
   }
 }
 
+class EndpointnotFound extends ApplicationError {
+  constructor(message = "Endpoint Not Found") {
+    super(message, 404);
+  }
+}
+
 module.exports = {
   ApplicationError,
   ServiceUnavailableError,
   MethodNotAllowedError,
+  EndpointnotFound,
 };

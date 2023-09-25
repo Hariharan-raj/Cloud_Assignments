@@ -4,7 +4,7 @@ const healthController = require("../controllers/healthController");
 const { MethodNotAllowedError } = require("../errors/applicationError");
 
 router.get("/", healthController.checkHealth);
-router.all("*", (req, res, next) => {
+router.all("/", (req, res, next) => {
   next(new MethodNotAllowedError());
 });
 
