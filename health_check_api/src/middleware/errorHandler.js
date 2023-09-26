@@ -24,7 +24,7 @@ function errorHandler(err, req, res, next) {
       .send();
   }
   return res
-    .status(500)
+    .status(405) // this should be 500 (ISE for all other errors)
     .set("Cache-Control", "no-cache, no-store, must-revalidate;")
     .send();
 }
