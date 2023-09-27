@@ -2,6 +2,7 @@ const {
   ServiceUnavailableError,
   MethodNotAllowedError,
   EndpointnotFound,
+  badrequest,
 } = require("../errors/applicationError");
 
 function errorHandler(err, req, res, next) {
@@ -23,8 +24,14 @@ function errorHandler(err, req, res, next) {
       .set("Cache-Control", "no-cache, no-store, must-revalidate;")
       .send();
   }
+  if (err instanceof badrequest) {
+    return res
+      .status(400)
+      .set("Cache-Control", "no-cache, no-store, must-revalidate;")
+      .send();
+  }
   return res
-    .status(405) // this should be 500 (ISE for all other errors)
+    .status(400) // this should be 500 (ISE for all other errors)
     .set("Cache-Control", "no-cache, no-store, must-revalidate;")
     .send();
 }

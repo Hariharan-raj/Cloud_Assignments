@@ -24,9 +24,16 @@ class EndpointnotFound extends ApplicationError {
   }
 }
 
+class badrequest extends ApplicationError {
+  constructor(message = "badrequest") {
+    super(message, 400);
+  }
+}
+
 module.exports = {
   ApplicationError,
   ServiceUnavailableError,
   MethodNotAllowedError,
   EndpointnotFound,
+  badrequest,
 };
