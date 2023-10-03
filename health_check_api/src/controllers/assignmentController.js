@@ -102,7 +102,6 @@ exports.deleteAssignment = async (req, res) => {
 exports.updateAssignment = async (req, res) => {
   try {
     const user = basicAuth(req);
-
     // Fetch assignment and account info
     const assignment = await assignmentService.fetchAssignmentById(
       req.params.id
@@ -116,7 +115,6 @@ exports.updateAssignment = async (req, res) => {
     if (!account || assignment.creatorId !== account.id) {
       return res.status(403).send("Only the creator can update the assignment");
     }
-
     // Update assignment and return updated data
     const updatedAssignment = await assignmentService.modifyAssignment(
       req.params.id,
@@ -134,6 +132,16 @@ exports.updateAssignment = async (req, res) => {
     };
     res.json(responseObj);
   } catch (err) {
+    if (err.message && err.message.startsWith("Invalid key")) {
+      return res.status(400).send("invalid params");
+    }
+    if (err.name === "SequelizeValidationError") {
+      return res.status(400).send("validation error");
+    }
+    if (err.name === "SequelizeDatabaseError") {
+      return res.status(400).send("bad request (incorrect params)");
+    }
+    console.log(err);
     res.status(500).send("Internal server error");
   }
 };

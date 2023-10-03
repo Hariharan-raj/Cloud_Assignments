@@ -65,9 +65,12 @@ exports.modifyAssignment = async (id, updateData) => {
     if (!assignment) {
       return null;
     }
-
+    const validKeys = ["name", "points", "num_of_attempts", "deadline"]; // Add all valid keys
     // Only update properties that are in updateData
     for (let key in updateData) {
+      if (!validKeys.includes(key)) {
+        throw new Error("Invalid key: " + key);
+      }
       if (
         updateData.hasOwnProperty(key) &&
         assignment.dataValues.hasOwnProperty(key)
@@ -88,16 +91,12 @@ exports.modifyAssignment = async (id, updateData) => {
 
 exports.removeAssignment = async (id, userEmail) => {
   const assignment = await Assignment.findByPk(id);
-  console.log("assignment", assignment);
   if (!assignment) {
     throw new Error("Assignment not found");
   }
   const account = await Account.findOne({
     where: { id: assignment.creatorId },
   });
-  console.log("account", account);
-
-  console.log("assignmail", userEmail);
 
   if (account.email !== userEmail) {
     throw new Error("Forbidden");

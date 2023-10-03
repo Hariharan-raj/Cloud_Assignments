@@ -1,6 +1,6 @@
 const { Account } = require("./account");
 const { Assignment } = require("./assignment");
-const { sequelize1 } = require("../config/db");
+// const { sequelize1 } = require("../config/db");
 
 // Associations
 Account.hasMany(Assignment, { as: "Assignments", foreignKey: "creatorId" });
