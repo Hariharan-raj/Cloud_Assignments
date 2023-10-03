@@ -1,10 +1,15 @@
 const { ServiceUnavailableError } = require("../errors/applicationError");
-const sequelize = require("../config/db");
+const { Sequelize } = require("sequelize");
 
 exports.checkDBConnection = async () => {
   try {
-    await sequelize.authenticate();
+    const sequelizeWithoutDB = new Sequelize("", "root", "Hariharan1109_", {
+      host: "localhost",
+      dialect: "mysql",
+    });
+    await sequelizeWithoutDB.authenticate();
   } catch (error) {
+    // console.log(error);
     throw new ServiceUnavailableError();
   }
 };

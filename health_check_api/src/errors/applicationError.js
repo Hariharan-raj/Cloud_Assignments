@@ -29,11 +29,22 @@ class badrequest extends ApplicationError {
     super(message, 400);
   }
 }
-
+class unauthorized extends ApplicationError {
+  constructor(message = "Unauthorized") {
+    super(message, 401);
+  }
+}
+class Forbidden extends ApplicationError {
+  constructor(message = "Forbidden") {
+    super(message, 403);
+  }
+}
 module.exports = {
   ApplicationError,
   ServiceUnavailableError,
   MethodNotAllowedError,
   EndpointnotFound,
   badrequest,
+  unauthorized,
+  Forbidden,
 };

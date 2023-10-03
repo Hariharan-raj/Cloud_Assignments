@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize({
+let sequelize = new Sequelize({
+  database: "mysql",
   username: "root",
   password: "Hariharan1109_",
   host: "localhost",
@@ -8,4 +9,29 @@ const sequelize = new Sequelize({
   logging: false,
 });
 
-module.exports = sequelize;
+let sequelize1 = new Sequelize({
+  database: "assignment_portal",
+  username: "root",
+  password: "Hariharan1109_",
+  host: "localhost",
+  dialect: "mysql",
+  logging: false,
+});
+function switchDatabase(dbName) {
+  //sequelize.close();
+  sequelize = new Sequelize({
+    database: dbName,
+    username: "root",
+    password: "Hariharan1109_",
+    host: "localhost",
+    dialect: "mysql",
+    logging: false,
+  });
+  console.log("here3");
+}
+
+module.exports = {
+  switchDatabase,
+  sequelize,
+  sequelize1,
+};

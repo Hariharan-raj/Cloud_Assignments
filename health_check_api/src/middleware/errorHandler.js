@@ -3,6 +3,8 @@ const {
   MethodNotAllowedError,
   EndpointnotFound,
   badrequest,
+  unauthorized,
+  Forbidden,
 } = require("../errors/applicationError");
 
 function errorHandler(err, req, res, next) {
@@ -27,6 +29,18 @@ function errorHandler(err, req, res, next) {
   if (err instanceof badrequest) {
     return res
       .status(400)
+      .set("Cache-Control", "no-cache, no-store, must-revalidate;")
+      .send();
+  }
+  if (err instanceof unauthorized) {
+    return res
+      .status(401)
+      .set("Cache-Control", "no-cache, no-store, must-revalidate;")
+      .send();
+  }
+  if (err instanceof Forbidden) {
+    return res
+      .status(403)
       .set("Cache-Control", "no-cache, no-store, must-revalidate;")
       .send();
   }
