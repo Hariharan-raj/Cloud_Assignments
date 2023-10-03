@@ -19,21 +19,18 @@ exports.getAllAssignments = async (req, res) => {
 
     res.json(filteredAssignments);
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     res.status(500).send("Internal server error");
   }
 };
 
 exports.createAssignment = async (req, res) => {
   try {
-    // console.log("createAssignmentcontroller");
     // Validate points to be between 1 and 10
-    if (req.body.points < 1 || req.body.points > 10) {
-      return res.status(400).send("Assignment points must be between 1 and 10");
-    }
+    // if (req.body.points < 1 || req.body.points > 10) {
+    //   return res.status(400).send("Assignment points must be between 1 and 10");
+    // }
     const user = basicAuth(req);
-    // console.log(req.body);
-    // console.log(user.name);
 
     const newAssignment = await assignmentService.createAssignment(
       req.body,
@@ -41,10 +38,16 @@ exports.createAssignment = async (req, res) => {
     );
     res.status(201).json(newAssignment);
   } catch (err) {
-    // console.log(err);
+    if (err.name === "SequelizeValidationError") {
+      return res.status(400).send("validation error");
+    }
+    if (err.name === "SequelizeDatabaseError") {
+      return res.status(400).send("bad request (incorrect params)");
+    }
     if (err.message === "Account not found") {
       return res.status(404).send("Account not found");
     }
+    console.log(err);
     res.status(500).send("Internal server error");
   }
 };
