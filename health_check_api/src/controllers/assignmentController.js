@@ -1,10 +1,18 @@
 const assignmentService = require("../services/assignmentService");
-const { Forbidden, EndpointnotFound } = require("../errors/applicationError");
+const { badrequest } = require("../errors/applicationError");
 const basicAuth = require("basic-auth");
 const { Account, Assignment } = require("../models");
 
-exports.getAllAssignments = async (req, res) => {
+exports.getAllAssignments = async (req, res, next) => {
   try {
+    if (
+      (typeof req.body === "object" && Object.keys(req.body).length !== 0) ||
+      (typeof req.body === "string" && req.body.trim().length !== 0) ||
+      Object.keys(req.query).length !== 0
+    ) {
+      return next(new badrequest());
+    }
+
     const assignments = await assignmentService.fetchAllAssignments();
     // Map over the fetched assignments and retain only the desired properties
     const filteredAssignments = assignments.map((assignment) => ({
@@ -24,8 +32,11 @@ exports.getAllAssignments = async (req, res) => {
   }
 };
 
-exports.createAssignment = async (req, res) => {
+exports.createAssignment = async (req, res, next) => {
   try {
+    if (Object.keys(req.query).length !== 0) {
+      return next(new badrequest());
+    }
     // Validate points to be between 1 and 10
     // if (req.body.points < 1 || req.body.points > 10) {
     //   return res.status(400).send("Assignment points must be between 1 and 10");
@@ -52,8 +63,15 @@ exports.createAssignment = async (req, res) => {
   }
 };
 
-exports.getAssignmentById = async (req, res) => {
+exports.getAssignmentById = async (req, res, next) => {
   try {
+    if (
+      (typeof req.body === "object" && Object.keys(req.body).length !== 0) ||
+      (typeof req.body === "string" && req.body.trim().length !== 0) ||
+      Object.keys(req.query).length !== 0
+    ) {
+      return next(new badrequest());
+    }
     // console.log("getbyidcontroller");
     const assignment = await assignmentService.fetchAssignmentById(
       req.params.id
@@ -80,8 +98,15 @@ exports.getAssignmentById = async (req, res) => {
   }
 };
 
-exports.deleteAssignment = async (req, res) => {
+exports.deleteAssignment = async (req, res, next) => {
   try {
+    if (
+      (typeof req.body === "object" && Object.keys(req.body).length !== 0) ||
+      (typeof req.body === "string" && req.body.trim().length !== 0) ||
+      Object.keys(req.query).length !== 0
+    ) {
+      return next(new badrequest());
+    }
     const user = basicAuth(req);
     const result = await assignmentService.removeAssignment(
       req.params.id,
@@ -99,8 +124,11 @@ exports.deleteAssignment = async (req, res) => {
   }
 };
 
-exports.updateAssignment = async (req, res) => {
+exports.updateAssignment = async (req, res, next) => {
   try {
+    if (Object.keys(req.query).length !== 0) {
+      return next(new badrequest());
+    }
     const user = basicAuth(req);
     // Fetch assignment and account info
     const assignment = await assignmentService.fetchAssignmentById(
