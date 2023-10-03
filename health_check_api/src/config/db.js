@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 
 let sequelize = new Sequelize({
   database: "mysql",
+  //database: "test", //for dabian
   username: "root",
   password: "Hariharan1109_",
   host: "localhost",

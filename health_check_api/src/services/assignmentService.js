@@ -1,5 +1,6 @@
 // const { Assignment } = require("../models/assignment");
 const { Account, Assignment } = require("../models");
+const { Forbidden } = require("../errors/applicationError");
 
 // Fetch only necessary fields from the database
 exports.fetchAllAssignments = async () => {
@@ -17,9 +18,6 @@ exports.fetchAllAssignments = async () => {
 };
 
 exports.createAssignment = async (assignmentData, creatorEmail) => {
-  // console.log("createAssignmentservice");
-
-  // Find the account using the creator email
   const account = await Account.findOne({ where: { email: creatorEmail } });
 
   // Check if account exists
@@ -57,7 +55,6 @@ exports.createAssignment = async (assignmentData, creatorEmail) => {
 
 exports.fetchAssignmentById = async (id) => {
   // console.log("getbyidcservice");
-
   return await Assignment.findByPk(id);
 };
 
@@ -91,9 +88,19 @@ exports.modifyAssignment = async (id, updateData) => {
 
 exports.removeAssignment = async (id, userEmail) => {
   const assignment = await Assignment.findByPk(id);
-  const account = await Account.findOne({ where: { email: userEmail } });
-  if (!assignment || account.email !== userEmail) {
-    return false;
+  console.log("assignment", assignment);
+  if (!assignment) {
+    throw new Error("Assignment not found");
+  }
+  const account = await Account.findOne({
+    where: { id: assignment.creatorId },
+  });
+  console.log("account", account);
+
+  console.log("assignmail", userEmail);
+
+  if (account.email !== userEmail) {
+    throw new Error("Forbidden");
   }
   await assignment.destroy();
   return true;

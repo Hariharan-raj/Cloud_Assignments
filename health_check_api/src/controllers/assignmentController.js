@@ -6,7 +6,6 @@ const { Account, Assignment } = require("../models");
 exports.getAllAssignments = async (req, res) => {
   try {
     const assignments = await assignmentService.fetchAllAssignments();
-
     // Map over the fetched assignments and retain only the desired properties
     const filteredAssignments = assignments.map((assignment) => ({
       id: assignment.id,
@@ -85,12 +84,14 @@ exports.deleteAssignment = async (req, res) => {
       req.params.id,
       user.name
     );
-    if (!result) {
-      return next(new Forbidden());
-      //return res.status(403).send("Forbidden"); // or 404 depending on the service's response.
-    }
     res.status(204).send();
   } catch (err) {
+    if (err.message === "Forbidden") {
+      //next(new Forbidden());
+      return res.status(403).send("Forbidden");
+    } else if (err.message === "Assignment not found") {
+      return res.status(404).send("Not FOund Assignment");
+    }
     res.status(500).send("Internal server error");
   }
 };

@@ -8,16 +8,16 @@ const authenticate = async (req, res, next) => {
   console.log(user);
   console.log("inside the authenticate");
   if (!user || !user.name || !user.pass) {
-    return next(new unauthorized());
+    return next(new unauthorized()); // check if this has to change to un authorized
     //   return res.status(401).send({ message: "Authentication required" });
   }
-
   const email = user.name; // basicAuth uses "name" for the username part
   const password = user.pass;
-  const hashedIncomingPassword = bcrypt.hashSync(password, 10);
-
   try {
     const account = await Account.findOne({ where: { email: email } });
+    if (!account) {
+      return next(new unauthorized());
+    }
 
     const match = bcrypt.compareSync(password, account.password);
     if (account && match) {
