@@ -2,6 +2,7 @@ const assignmentService = require("../services/assignmentService");
 const { badrequest } = require("../errors/applicationError");
 const basicAuth = require("basic-auth");
 const { Account, Assignment } = require("../models");
+// const healthService = require("../services/healthService");
 
 exports.getAllAssignments = async (req, res, next) => {
   try {
@@ -12,6 +13,7 @@ exports.getAllAssignments = async (req, res, next) => {
     ) {
       return next(new badrequest());
     }
+    // await healthService.checkDBConnection();
 
     const assignments = await assignmentService.fetchAllAssignments();
     // Map over the fetched assignments and retain only the desired properties
@@ -27,6 +29,7 @@ exports.getAllAssignments = async (req, res, next) => {
 
     res.json(filteredAssignments);
   } catch (err) {
+    // next(err);
     console.log(err);
     res.status(500).send("Internal server error");
   }
@@ -70,7 +73,8 @@ exports.getAssignmentById = async (req, res, next) => {
       (typeof req.body === "string" && req.body.trim().length !== 0) ||
       Object.keys(req.query).length !== 0
     ) {
-      return next(new badrequest());
+      // return next(new badrequest());
+      return res.status(400).send("validation error");
     }
     // console.log("getbyidcontroller");
     const assignment = await assignmentService.fetchAssignmentById(
